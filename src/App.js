@@ -1,13 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import Todo from './Todo';
 // import Button from '@mui/material/Button';
-
+import db from './firebase';
 function App() {
 
   const [todos,setTodos] = useState([]);
   const [input,setInput]= useState('');
   // console.log("",input)
+
+  //when the app loads we need to listen to the database and fetech new todos as they get added removed
+
+  useEffect(()=>{
+    //fires when the app.js loads
+    db.collection('todos').onSnapshot(snapshot=>{
+      setTodos(snapshot.docs.map(doc=> doc.data().todo))
+    })
+  },[])
+
 
   const addTodo = (event)=>{
     setTodos([...todos,input]);
